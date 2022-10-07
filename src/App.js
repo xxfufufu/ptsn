@@ -28,6 +28,7 @@ const useKeyPress = function (targetKey) {
 };
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [users, setUsers] = useState([]);
   const [usersRenders, setUsersRenders] = useState([]);
   const [cursor, setCursor] = useState(0);
@@ -76,41 +77,48 @@ function App() {
       .then((res) => {
         setUsers(res);
         setUsersRenders(res);
+        setIsLoading(false);
       });
   }, []);
 
   return (
     <div className="container">
-      <h1 className="title">Contact User</h1>
-      <input
-        type="text"
-        placeholder="Please input name or phone . . ."
-        onChange={(e) => searchUsers(e.target.value)}
-      />
-      <div className="content">
-        {usersRenders.length > 0 ? (
-          usersRenders.map((item, i) => {
-            return (
-              <div
-                key={i}
-                className={`list-user ${i === cursor ? "active" : ""}`}
-                onMouseEnter={() => setHovered(i)}
-                onMouseLeave={() => setHovered(undefined)}
-              >
-                <div className="user-name">{item.name}</div>
-                <a href={`tel:${item.phone}`} className="user-phone">
-                  {item.phone}
-                </a>
-                <a href={`mailto:${item.email}`} className="user-phone">
-                  {item.email}
-                </a>
-              </div>
-            );
-          })
-        ) : (
-          <div>No results</div>
-        )}
-      </div>
+      {isLoading ? (
+        <div className="loading"></div>
+      ) : (
+        <>
+          <h1 className="title">Contact User</h1>
+          <input
+            type="text"
+            placeholder="Please input name or phone . . ."
+            onChange={(e) => searchUsers(e.target.value)}
+          />
+          <div className="content">
+            {usersRenders.length > 0 ? (
+              usersRenders.map((item, i) => {
+                return (
+                  <div
+                    key={i}
+                    className={`list-user ${i === cursor ? "active" : ""}`}
+                    onMouseEnter={() => setHovered(i)}
+                    onMouseLeave={() => setHovered(undefined)}
+                  >
+                    <div className="user-name">{item.name}</div>
+                    <a href={`tel:${item.phone}`} className="user-phone">
+                      {item.phone}
+                    </a>
+                    <a href={`mailto:${item.email}`} className="user-phone">
+                      {item.email}
+                    </a>
+                  </div>
+                );
+              })
+            ) : (
+              <div>No results</div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
